@@ -1,0 +1,26 @@
+{
+  "male": [
+    "Juan", "Jose", "Miguel", "Angelo", "Rafael", "Gabriel", "Daniel", "Carlos",
+    "Marco", "Paolo", "Luis", "Antonio", "Ricardo", "Eduardo", "Fernando",
+    "Roberto", "Manuel", "Pedro", "Ramon", "Rodrigo", "Alejandro", "Vicente",
+    "Diego", "Sergio", "Andres", "Mateo", "Sebastian", "Lorenzo", "Emilio",
+    "Javier", "Alfonso", "Enrique", "Dante", "Felix", "Leon", "Oscar"
+  ],
+  "female": [
+    "Maria", "Ana", "Isabel", "Sofia", "Gabriela", "Angelica", "Patricia",
+    "Carmen", "Rosa", "Teresa", "Elena", "Catalina", "Beatriz", "Monica",
+    "Cristina", "Diana", "Luz", "Gloria", "Margarita", "Esperanza", "Victoria",
+    "Rosario", "Cecilia", "Josefa", "Dolores", "Luisa", "Amanda", "Milagros",
+    "Consuelo", "Remedios", "Angela", "Veronica", "Camila", "Valentina", "Bianca"
+  ],
+  "surnames": [
+    "Santos", "Reyes", "Cruz", "Bautista", "Ocampo", "Garcia", "Mendoza", "Torres",
+    "Flores", "Gonzales", "Rivera", "Martinez", "Ramos", "Lopez", "Castillo",
+    "Aquino", "Morales", "Pascual", "Villanueva", "Santiago", "Fernandez",
+    "dela Cruz", "Sanchez", "Alvarez", "Diaz", "Mercado", "Gutierrez", "Perez",
+    "Velasco", "Domingo", "Navarro", "Gutierrez", "Romero", "Valdez", "Aguilar",
+    "Mendez", "Castro", "Salazar", "Ortega", "Jimenez", "Rojas", "Herrera",
+    "Medina", "Nunez", "Estrada", "Vargas", "Espinosa", "Cortez", "Suarez",
+    "Lim", "Tan", "Go", "Ng", "Chua", "Sy", "Ong", "Lee", "Chan"
+  ]
+}

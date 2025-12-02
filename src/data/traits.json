@@ -1,0 +1,48 @@
+{
+  "personality_traits": [
+    "maalalahanin (thoughtful)", "masipag (hardworking)", "matulungin (helpful)", 
+    "mapagpakumbaba (humble)", "mabait (kind)", "mapagmahal sa pamilya (family-loving)",
+    "masayahin (cheerful)", "mapagbigay (generous)", "matiyaga (patient)", 
+    "mapagpatawad (forgiving)", "mapagmalasakit (caring)", "maalaga (nurturing)",
+    "madasalin (prayerful)", "magalang (respectful)", "mapagpasalamat (grateful)",
+    "makaDiyos (God-fearing)", "maawain (compassionate)", "mapagkakatiwalaan (trustworthy)",
+    "masunurin (obedient)", "mabuting kaibigan (good friend)", "palabiro (playful)",
+    "makulit (persistent)", "matapang (brave)", "mahiyain (shy)", "palangiti (smiling)",
+    "hospitable", "resilient", "optimistic", "religious", "family-oriented",
+    "friendly", "generous", "loyal", "adaptable", "resourceful",
+    "warm", "welcoming", "persevering", "faithful", "sociable",
+    "bahala na attitude", "close family ties", "pakikisama (getting along)",
+    "hiya (sense of shame/propriety)", "utang na loob (debt of gratitude)",
+    "bayanihan spirit", "maka-Pilipino (nationalistic)"
+  ],
+  "occupations": [
+    "Teacher", "Nurse", "Engineer", "OFW (Overseas Filipino Worker)", "Jeepney Driver",
+    "Sari-sari Store Owner", "Seafarer", "Call Center Agent", "Police Officer",
+    "Barangay Official", "Farmer", "Fisherman", "Tricycle Driver", "Chef",
+    "Doctor", "Accountant", "Sales Representative", "IT Professional", "Entrepreneur",
+    "Construction Worker", "Security Guard", "Government Employee", "Social Worker",
+    "Banker", "Real Estate Agent", "Mechanic", "Electrician", "Plumber",
+    "Marketing Professional", "Hotel Staff", "Restaurant Owner", "Jeepney Operator",
+    "Overseas Caregiver", "Domestic Helper"
+  ],
+  "hobbies": [
+    "basketball", "karaoke", "cooking", "watching teleserye", "social media",
+    "mall hopping", "videoke", "playing mobile games", "attending fiestas",
+    "going to church", "family gatherings", "watching basketball", "cockfighting",
+    "singing", "dancing", "playing guitar", "billiards", "mahjong",
+    "traveling", "photography", "blogging", "online selling", "baking",
+    "gardening", "fishing", "swimming", "biking", "running",
+    "volleyball", "badminton", "reading", "watching movies", "street food hunting"
+  ],
+  "hair_colors": [
+    "black", "dark brown", "brown", "light brown", "dyed blonde", 
+    "dyed red", "highlighted", "salt and pepper", "gray"
+  ],
+  "eye_colors": [
+    "dark brown", "brown", "black", "hazel"
+  ],
+  "builds": [
+    "slim", "average", "athletic", "stocky", "petite", "tall",
+    "robust", "lean", "medium build"
+  ]
+}
