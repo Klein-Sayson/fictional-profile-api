@@ -7,21 +7,32 @@ class CharacterGenerator {
     if (seed) {
       this.rng = this.seededRandom(seed);
     } else {
-      this.rng = Math.random;
+      // FIX: Wrap Math.random to ensure it runs correctly in all contexts
+      this.rng = () => Math.random();
     }
   }
 
-  // Seeded random number generator for deterministic results
+  // --- NEW: Much better Seed Logic (Mulberry32 + FNV-1a Hash) ---
   seededRandom(seed) {
-    // Convert string seed to number if needed
-    let numericSeed = typeof seed === 'string' 
-      ? seed.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
-      : seed;
+    // 1. Hash the string seed to generate a unique starting number
+    // This ensures "abc" and "cba" produce completely different results.
+    let h = 0x811c9dc5;
+    const strSeed = String(seed);
     
+    for (let i = 0; i < strSeed.length; i++) {
+        h ^= strSeed.charCodeAt(i);
+        h = Math.imul(h, 0x01000193);
+    }
+    
+    let a = h >>> 0; // Force 32-bit unsigned integer
+
+    // 2. Return the Mulberry32 generator function
     return function() {
-      numericSeed = (numericSeed * 9301 + 49297) % 233280;
-      return numericSeed / 233280;
-    };
+      a += 0x6D2B79F5;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = t + Math.imul(t ^ (t >>> 7), 61 | t) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    }
   }
 
   randomChoice(array) {
@@ -35,6 +46,7 @@ class CharacterGenerator {
 
   randomSample(array, count) {
     if (!array || array.length === 0) return [];
+    // Using a safe sort with the custom RNG
     const shuffled = [...array].sort(() => this.rng() - 0.5);
     return shuffled.slice(0, Math.min(count, array.length));
   }
@@ -46,14 +58,12 @@ class CharacterGenerator {
       gender = this.randomChoice(['male', 'female', 'non-binary', 'other']);
     }
     
-    // --- FIX START: Check for provided name first ---
+    // Name Logic (Prioritizes user input)
     let fullName;
 
     if (options.name) {
-      // If a name is provided in options, use it
       fullName = options.name;
     } else {
-      // Otherwise, generate a random name based on gender
       let firstName;
       if (gender === 'male') {
         firstName = this.randomChoice(names.male);
@@ -66,7 +76,6 @@ class CharacterGenerator {
       const lastName = this.randomChoice(names.surnames);
       fullName = `${firstName} ${lastName}`;
     }
-    // --- FIX END ---
 
     // Generate age
     const age = options.age 
@@ -116,26 +125,12 @@ class CharacterGenerator {
   generateMultiple(count, options = {}) {
     const characters = [];
     for (let i = 0; i < count; i++) {
-      // Create a new generator for each character to ensure randomness
-      const gen = new CharacterGenerator(this.seed ? `${this.seed}_${i}` : null);
+      // Ensure sub-seeds are unique but deterministic based on the master seed
+      const subSeed = this.seed ? `${this.seed}_${i}` : null;
+      const gen = new CharacterGenerator(subSeed);
       characters.push(gen.generate(options));
     }
     return characters;
-  }
-
-  filterFields(character, fields) {
-    if (!fields || fields.length === 0) {
-      return character;
-    }
-
-    const filtered = {};
-    fields.forEach(field => {
-      if (character.hasOwnProperty(field)) {
-        filtered[field] = character[field];
-      }
-    });
-    
-    return filtered;
   }
 }
 
