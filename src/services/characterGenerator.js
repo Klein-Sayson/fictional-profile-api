@@ -46,18 +46,27 @@ class CharacterGenerator {
       gender = this.randomChoice(['male', 'female', 'non-binary', 'other']);
     }
     
-    // Generate name
-    let firstName;
-    if (gender === 'male') {
-      firstName = this.randomChoice(names.male);
-    } else if (gender === 'female') {
-      firstName = this.randomChoice(names.female);
+    // --- FIX START: Check for provided name first ---
+    let fullName;
+
+    if (options.name) {
+      // If a name is provided in options, use it
+      fullName = options.name;
     } else {
-      firstName = this.randomChoice([...names.male, ...names.female]);
+      // Otherwise, generate a random name based on gender
+      let firstName;
+      if (gender === 'male') {
+        firstName = this.randomChoice(names.male);
+      } else if (gender === 'female') {
+        firstName = this.randomChoice(names.female);
+      } else {
+        firstName = this.randomChoice([...names.male, ...names.female]);
+      }
+      
+      const lastName = this.randomChoice(names.surnames);
+      fullName = `${firstName} ${lastName}`;
     }
-    
-    const lastName = this.randomChoice(names.surnames);
-    const fullName = `${firstName} ${lastName}`;
+    // --- FIX END ---
 
     // Generate age
     const age = options.age 

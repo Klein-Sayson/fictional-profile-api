@@ -91,21 +91,28 @@ GET /api/v1/character/random
 {
   "success": true,
   "data": {
-    "id": 1,
-    "name": "Alex Morgan",
-    "age": 28,
+    "name": "Maria Perez",
+    "age": 23,
     "gender": "male",
-    "occupation": "Software Developer",
-    "background": "Grew up in a small coastal town...",
+    "occupation": "Restaurant Owner",
+    "background": "Maria Perez spent childhood years in university libraries, fostering a deep love for learning and knowledge.",
     "appearance": {
-      "hair_color": "brown",
-      "eye_color": "green",
-      "height_cm": 178,
-      "build": "athletic"
+      "hair_color": "dyed red",
+      "eye_color": "black",
+      "height_cm": 174,
+      "build": "robust"
     },
-    "personality_traits": ["curious", "reserved", "analytical"],
-    "hobbies": ["chess", "hiking", "coding"],
-    "seed": null
+    "personality_traits": [
+      "magalang (respectful)",
+      "mapagpakumbaba (humble)",
+      "palabiro (playful)"
+    ],
+    "hobbies": [
+      "blogging",
+      "singing"
+    ],
+    "seed": null,
+    "id": 25
   }
 }
 ```
