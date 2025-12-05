@@ -21,9 +21,11 @@ A RESTful API that generates detailed fictional character profiles with customiz
 ## Installation
 
 ### 1. Clone or create the project
+```bash
+https://github.com/Klein-Sayson/fictional-profile-api.git
+```
 
 ```bash
-mkdir fictional-profile-api
 cd fictional-profile-api
 ```
 
