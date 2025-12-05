@@ -7,15 +7,14 @@ class CharacterGenerator {
     if (seed) {
       this.rng = this.seededRandom(seed);
     } else {
-      // FIX: Wrap Math.random to ensure it runs correctly in all contexts
+      // Wrap Math.random to ensure context safety
       this.rng = () => Math.random();
     }
   }
 
-  // --- NEW: Much better Seed Logic (Mulberry32 + FNV-1a Hash) ---
+  // --- 1. Deterministic Random Generator (Mulberry32 + FNV-1a Hash) ---
   seededRandom(seed) {
-    // 1. Hash the string seed to generate a unique starting number
-    // This ensures "abc" and "cba" produce completely different results.
+    // Hash the string seed to get a unique starting integer
     let h = 0x811c9dc5;
     const strSeed = String(seed);
     
@@ -26,7 +25,7 @@ class CharacterGenerator {
     
     let a = h >>> 0; // Force 32-bit unsigned integer
 
-    // 2. Return the Mulberry32 generator function
+    // Return the Mulberry32 function
     return function() {
       a += 0x6D2B79F5;
       let t = Math.imul(a ^ (a >>> 15), 1 | a);
@@ -46,7 +45,6 @@ class CharacterGenerator {
 
   randomSample(array, count) {
     if (!array || array.length === 0) return [];
-    // Using a safe sort with the custom RNG
     const shuffled = [...array].sort(() => this.rng() - 0.5);
     return shuffled.slice(0, Math.min(count, array.length));
   }
@@ -58,12 +56,14 @@ class CharacterGenerator {
       gender = this.randomChoice(['male', 'female', 'non-binary', 'other']);
     }
     
-    // Name Logic (Prioritizes user input)
+    // --- 2. Name Logic (Prioritizes user input) ---
     let fullName;
 
     if (options.name) {
+      // Use the name provided in the API request
       fullName = options.name;
     } else {
+      // Generate a random name
       let firstName;
       if (gender === 'male') {
         firstName = this.randomChoice(names.male);
@@ -82,7 +82,7 @@ class CharacterGenerator {
       ? parseInt(options.age) 
       : this.randomInt(18, 65);
 
-    // Generate character
+    // Generate character object
     const character = {
       name: fullName,
       age: age,
@@ -125,12 +125,42 @@ class CharacterGenerator {
   generateMultiple(count, options = {}) {
     const characters = [];
     for (let i = 0; i < count; i++) {
-      // Ensure sub-seeds are unique but deterministic based on the master seed
+      // Create sub-seed to ensure every character is unique but deterministic
       const subSeed = this.seed ? `${this.seed}_${i}` : null;
       const gen = new CharacterGenerator(subSeed);
       characters.push(gen.generate(options));
     }
     return characters;
+  }
+
+  // --- 3. Filter Fields Helper ---
+  filterFields(data, fields) {
+    if (!fields || fields.length === 0) {
+      return data;
+    }
+
+    // Handle Array (for generateMultiple)
+    if (Array.isArray(data)) {
+      return data.map(item => this.filterFields(item, fields));
+    }
+
+    // Handle Single Object
+    const filtered = {};
+    fields.forEach(field => {
+      // 1. Check top-level fields (e.g., name, gender, id)
+      if (data.hasOwnProperty(field)) {
+        filtered[field] = data[field];
+      }
+      // 2. Check nested appearance fields specifically (optional helper)
+      else if (['hair_color', 'eye_color', 'height_cm', 'build'].includes(field)) {
+        if (!filtered.appearance) filtered.appearance = {};
+        if (data.appearance) {
+          filtered.appearance[field] = data.appearance[field];
+        }
+      }
+    });
+    
+    return filtered;
   }
 }
 

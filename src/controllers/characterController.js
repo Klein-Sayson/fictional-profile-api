@@ -1,6 +1,5 @@
-const CharacterGenerator = require('../services/characterGenerator');
+const CharacterGenerator = require('../services/characterGenerator'); // Ensure capitalization matches your file
 const Character = require('../models/Character');
-const traits = require('../data/traits.json');
 
 /**
  * Generate a random character
@@ -39,7 +38,7 @@ exports.generateWithSeed = async (req, res) => {
   try {
     const { seed } = req.params;
     
-    // Check if character with this seed already exists
+    // Check if character with this seed already exists in DB
     const existingCharacter = await Character.findBySeed(seed);
     if (existingCharacter) {
       return res.json({
@@ -80,11 +79,15 @@ exports.generateWithSeed = async (req, res) => {
  */
 exports.generateCustom = async (req, res) => {
   try {
+    // 1. Extract query params
     const options = { ...req.query };
+    
+    // 2. Parse 'fields' if it exists (e.g., "name,gender" -> ["name", "gender"])
     const fields = options.fields ? options.fields.split(',').map(f => f.trim()) : null;
+    
     const count = parseInt(options.count) || 1;
     
-    // Remove non-generation parameters
+    // Cleanup options passed to generator
     delete options.fields;
     delete options.count;
     
@@ -99,24 +102,30 @@ exports.generateCustom = async (req, res) => {
     
     const generator = new CharacterGenerator();
     
-    // Generate single or multiple characters
+    // Case A: Single Character
     if (count === 1) {
+      // Generate (will respect options.name if provided)
       const character = generator.generate(options);
+      
+      // Save
       const characterId = await Character.create(character);
       
+      // Combine Data
       const responseData = {
         ...character,
         id: characterId
       };
       
+      // Filter & Return
       res.json({
         success: true,
         data: fields ? generator.filterFields(responseData, fields) : responseData
       });
+
+    // Case B: Multiple Characters
     } else {
       const characters = generator.generateMultiple(count, options);
       
-      // Save all characters
       const savedCharacters = [];
       for (const char of characters) {
         const charId = await Character.create(char);
@@ -126,11 +135,12 @@ exports.generateCustom = async (req, res) => {
         });
       }
       
+      // Filter & Return
       res.json({
         success: true,
         count: savedCharacters.length,
         data: fields 
-          ? savedCharacters.map(c => generator.filterFields(c, fields))
+          ? generator.filterFields(savedCharacters, fields)
           : savedCharacters
       });
     }
@@ -150,7 +160,6 @@ exports.generateCustom = async (req, res) => {
  */
 exports.getTraits = async (req, res) => {
   try {
-    // Get traits from database
     const dbTraits = await Character.getAvailableTraits();
     
     res.json({
@@ -178,86 +187,41 @@ exports.getTraits = async (req, res) => {
 };
 
 /**
- * Get JSON schema for the character object
- * GET /api/v1/schema
+ * Get JSON schema
  */
 exports.getSchema = (req, res) => {
   const schema = {
     type: "object",
     properties: {
-      id: { 
-        type: "integer",
-        description: "Unique identifier for the character"
-      },
-      name: { 
-        type: "string",
-        description: "Full name of the character"
-      },
-      age: { 
-        type: "integer", 
-        minimum: 1, 
-        maximum: 120,
-        description: "Age in years"
-      },
-      gender: { 
-        type: "string", 
-        enum: ["male", "female", "non-binary", "other"],
-        description: "Gender identity"
-      },
-      occupation: { 
-        type: "string",
-        description: "Current profession or job"
-      },
-      background: { 
-        type: "string",
-        description: "Brief background story"
-      },
+      id: { type: "integer" },
+      name: { type: "string" },
+      age: { type: "integer", minimum: 1, maximum: 120 },
+      gender: { type: "string", enum: ["male", "female", "non-binary", "other"] },
+      occupation: { type: "string" },
+      background: { type: "string" },
       appearance: {
         type: "object",
         properties: {
           hair_color: { type: "string" },
           eye_color: { type: "string" },
-          height_cm: { 
-            type: "integer",
-            description: "Height in centimeters"
-          },
+          height_cm: { type: "integer" },
           build: { type: "string" }
         },
         required: ["hair_color", "eye_color", "height_cm", "build"]
       },
-      personality_traits: { 
-        type: "array", 
-        items: { type: "string" },
-        description: "List of personality characteristics"
-      },
-      hobbies: { 
-        type: "array", 
-        items: { type: "string" },
-        description: "List of hobbies and interests"
-      },
-      seed: {
-        type: "string",
-        nullable: true,
-        description: "Seed value for deterministic generation"
-      },
-      created_at: {
-        type: "string",
-        format: "date-time",
-        description: "Timestamp of character creation"
-      }
+      personality_traits: { type: "array", items: { type: "string" } },
+      hobbies: { type: "array", items: { type: "string" } },
+      seed: { type: "string", nullable: true },
+      created_at: { type: "string", format: "date-time" }
     },
     required: ["name", "age", "gender", "appearance", "personality_traits", "hobbies"]
   };
   
-  res.json({
-    success: true,
-    data: schema
-  });
+  res.json({ success: true, data: schema });
 };
 
 /**
- * Get API statistics
- * GET /api/v1/stats
+ * Get Stats
  */
 exports.getStats = async (req, res) => {
   try {
